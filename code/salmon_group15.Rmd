@@ -1,0 +1,23 @@
+---
+title: "Salmon Group 15"
+author: "Anastasia Kunz"
+date: "1/30/2021"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+themecheck
+
+```{r}
+code <- 1+2
+```
+
+
