@@ -1,6 +1,6 @@
 ---
 title: "Salmon Group 15"
-author: "Anastasia Kunz"
+author: "Anastasia Kunz, Zoe Duerksen-Salm, Catherine Takata"
 date: "1/30/2021"
 output: 
   html_document:
@@ -14,10 +14,5 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-themecheck
-
-```{r}
-code <- 1+2
-```
 
 
