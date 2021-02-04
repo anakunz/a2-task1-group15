@@ -22,6 +22,16 @@ library(slider)
 library(lubridate)
 ```
 
+# Tab 1:
+```{r}
+#initial data read in
+
+fish_data <- read_csv(here("data","willamette_fish_passage.csv"))
+```
+
+
+
+
 # Tab 2: Seasonplots
 
 This “Seasonplots” tab should contain: 
@@ -30,7 +40,7 @@ This “Seasonplots” tab should contain:
 - Add 2 - 3 bulletpoints summarizing the major trends you see in the seasonplots.
 Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
 ```{r seasonplot1}
-coho_jack_steel <- read_csv(here("data","willamette_fish_passage.csv")) %>% 
+coho_jack_steel <- fish_data %>% 
   clean_names() %>% 
   select(date, coho, jack_coho, steelhead) 
 
