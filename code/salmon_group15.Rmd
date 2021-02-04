@@ -11,7 +11,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(here)
@@ -20,15 +20,89 @@ library(feasts)
 library(tsibble)
 library(slider)
 library(lubridate)
+library(patchwork)
 ```
 
-# Tab 1:
+# Overview:
+This “Overview” section (above the tabs) should contain, in whatever order you choose: 
+An engaging image (with caption, including photo credit) that is relevant to the dataset
+A brief summary (3 - 4 sentences) of the dataset, and what is included in this “report”
+A map of the fish ladder location (you can make this in R on your own, or include an existing map appropriately licensed, with attribution)
+A professionally formatted data citation
+Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
+
 ```{r}
 #initial data read in
 
-fish_data <- read_csv(here("data","willamette_fish_passage.csv"))
+fish_data <- read_csv(here("data","willamette_fish_passage.csv")) %>% 
+  clean_names()
+```
+# Tab 1:
+This “Time series” tab should contain: 
+A finalized, static graph of adult passage for coho, jack coho, and steelhead salmon (you decide if these all occupy the same panel, or if they are in separate panels). Add a figure caption. Replace NA values with zero. 
+2 - 3 bulletpoints summarizing major patterns / notable trends in the salmon passage time series data
+Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
+
+```{r timeseries}
+# data wrangling: convert date, create tsibble, select species, na to 0
+#ts_salmon <- fish_data %>% 
+#  select(date, coho, jack_coho, steelhead) %>%
+#  pivot_longer(ts_salmon, c(coho, jack_coho, steelhead), names_to = "species") %>% 
+#  mutate(date = lubridate::mdy(date)) %>% 
+#  as_tsibble(key = NULL, index = date) %>% 
+#  mutate_at(c(2:4), ~replace(., is.na(.), 0))
+
+ts_salmon <- fish_data %>% 
+  mutate(date = lubridate::mdy(date)) %>% 
+  as_tsibble(key = NULL, index = date) %>% 
+  select(date, coho, jack_coho, steelhead) %>% 
+  mutate_at(c(2:4), ~replace(., is.na(.), 0)) 
+
+#Steelhead Plot
+
+steelhead_plot <-ggplot(ts_salmon, aes(x = date, y = steelhead))+
+  geom_line(color = "indianred")+
+  labs(
+    y = "Steelhead",
+    x = " "
+  )+
+  theme_minimal()+
+  ylim(0, 1250)
+
+# Coho Plot
+coho_plot <- ggplot(ts_salmon, aes(x = date, y = coho))+
+  geom_line(color = "rosybrown")+
+  theme_minimal()+
+  labs(
+    y = "Coho",
+    x = "Date"
+  )+
+  ylim(0, 1250)
+
+# Jack Coho Plot
+jackcoho_plot <- ggplot(ts_salmon, aes(x = date, y = jack_coho))+
+  geom_line(color = "lightsalmon1")+
+  theme_minimal()+
+  labs(
+    y = "Jack Coho",
+    x = " "
+  )+
+  ylim(0, 1250)
+
+
 ```
 
+```{r}
+# Final graph using patchwork
+
+salmon_patchwork <-(steelhead_plot / jackcoho_plot / coho_plot)
+
+salmon_patchwork + plot_annotation(
+  title = 'Salmon Run by Species',
+  subtitle = 'Number of Steelhead, Coho, and Jack Coho Salmon in the Willamette River 2001 - 2010',
+  caption = 'FILL OUT THE CAPTION'
+)
+```
 
 
 
@@ -41,7 +115,6 @@ This “Seasonplots” tab should contain:
 Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
 ```{r seasonplot1}
 coho_jack_steel <- fish_data %>% 
-  clean_names() %>% 
   select(date, coho, jack_coho, steelhead) 
 
 # convert df to a tsibble
