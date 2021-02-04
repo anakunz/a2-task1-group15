@@ -37,21 +37,12 @@ Remember: All code that you used to wrangle the data and prepare the graphs shou
 fish_data <- read_csv(here("data","willamette_fish_passage.csv")) %>% 
   clean_names()
 ```
-# Tab 1:
-This “Time series” tab should contain: 
-A finalized, static graph of adult passage for coho, jack coho, and steelhead salmon (you decide if these all occupy the same panel, or if they are in separate panels). Add a figure caption. Replace NA values with zero. 
-2 - 3 bulletpoints summarizing major patterns / notable trends in the salmon passage time series data
-Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
+# Tab 1: Time Series
+
 
 ```{r timeseries}
-# data wrangling: convert date, create tsibble, select species, na to 0
-#ts_salmon <- fish_data %>% 
-#  select(date, coho, jack_coho, steelhead) %>%
-#  pivot_longer(ts_salmon, c(coho, jack_coho, steelhead), names_to = "species") %>% 
-#  mutate(date = lubridate::mdy(date)) %>% 
-#  as_tsibble(key = NULL, index = date) %>% 
-#  mutate_at(c(2:4), ~replace(., is.na(.), 0))
 
+#data wrangling: convert date, create tsibble, select species, na to 0
 ts_salmon <- fish_data %>% 
   mutate(date = lubridate::mdy(date)) %>% 
   as_tsibble(key = NULL, index = date) %>% 
@@ -92,18 +83,27 @@ jackcoho_plot <- ggplot(ts_salmon, aes(x = date, y = jack_coho))+
 
 ```
 
-```{r}
+```{r, fig.cap = "**Figure 1.** Shows the number of adult Steelhead (top plot), Jack Coho (middle plot), and Coho (bottom plot) salmon passing through the Willamette Falls Fish Ladder on the Willamette River in Oregon from January 1 2001 - December 31 2010."}
 # Final graph using patchwork
 
 salmon_patchwork <-(steelhead_plot / jackcoho_plot / coho_plot)
 
 salmon_patchwork + plot_annotation(
-  title = 'Salmon Run by Species',
-  subtitle = 'Number of Steelhead, Coho, and Jack Coho Salmon in the Willamette River 2001 - 2010',
-  caption = 'FILL OUT THE CAPTION'
+  title = 'Salmon Passage by Species',
+  subtitle = 'Number of Steelhead, Coho, and Jack Coho Salmon counted at the Willamette Falls Fish Ladder \n2001 - 2010'
 )
 ```
 
+### Summary
+By tracking the number of adult salmon passing through the fish ladder, species specific trends become clear:
+
+- Steelhead, Jack Coho, and Coho all have song seasonal passage patterns, with Coho and Jack Coho passing in the fall, while Steelhead pass over a greater span of time in the summer months.
+
+- Adult Steelhead usually pass in higher numbers than Coho and Jack Coho, except in 2009 and 2010 when Coho numbers surpassed both Steelhead and Jack Coho.
+
+- Coho show an increasing trend with increasing numbers of adults passing in recent years.
+
+- Jack Coho are showing relatively stable low numbers, with no strong increasing trend.
 
 
 # Tab 2: Seasonplots
