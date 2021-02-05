@@ -137,3 +137,49 @@ cjs_ts_tidy %>%
        y = "Total monthly fish count (n)",
        title = "Seasonal Fish Counts")
 ```
+
+
+# Tab 3: Summary statistics and analysis 
+
+This “Summary statistics and analysis” tab should contain: 
+
+- A finalized figure of annual totals for fish passage, for each of the 3 species (coho, jack coho, steelhead). You decide if this is in a single panel, or multiple panels. Add a figure caption. 
+- Add 2 - 3 bulletpoints summarizing major trends you see in the annual totals by species from 2000 - 2010.
+
+
+```{r}
+#Isolate three fish species: coho, jack, and steelhead with select()
+# In a pipe sequence, change the initial "date" and  mutate() to add to the data set
+# Mutate() a new column specifically for "year", in order to easily filter data to obtain "annual" fish totals
+
+coho_jackcoho_steelhead <- fish_data %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(year = year(date)) %>% 
+  select(year, coho, jack_coho, steelhead) %>% 
+  pivot_longer(coho:steelhead, 
+               names_to = "species",
+               values_to = "fish_counts") %>% 
+  group_by(year) %>% 
+  count(species,  wt = fish_counts)
+```
+
+
+```{r}
+
+ggplot(coho_jackcoho_steelhead, aes(fill = species, x = year, y = n)) +
+  geom_col(show.legend = FALSE) + 
+  facet_wrap(~species) + 
+  scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010)) +
+  theme_minimal() +
+  labs(title = "Annual Counts of Fish Passage",
+       subtitle = "Willamette River, Oregon, US",
+       x = "Year",
+       y = "Counts of Fish")
+
+
+#geom_col(position = "dodge", stat = "identity", alpha = 0.7) 
+```
+
+
+
+
