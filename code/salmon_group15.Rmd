@@ -24,9 +24,16 @@ library(patchwork)
 ```
 
 # Overview:
-This “Overview” section (above the tabs) should contain, in whatever order you choose: 
-An engaging image (with caption, including photo credit) that is relevant to the dataset
-A brief summary (3 - 4 sentences) of the dataset, and what is included in this “report”
+
+
+![Photo taken with a DJI Mavik Pro drone on July 19, 2017.](https://upload.wikimedia.org/wikipedia/commons/c/c2/Willamette_Falls_from_drone.jpg)
+
+
+The Willamette River Falls Fish Ladder in Oregon has been the site of fish counts for over 60 years. This analysis explores the passage of Steelhead, Coho, and Jack Coho through the Willamette River Fish Ladder, looking at how their populations are changing through time. By investigating the yearly and seasonal shifts, we can better understand the species dynamics in the Willamette River.
+
+This study provides a yearly time series, seasonplot, and statistical summary of fish passage from 2001 - 2010.
+
+
 A map of the fish ladder location (you can make this in R on your own, or include an existing map appropriately licensed, with attribution)
 A professionally formatted data citation
 Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
