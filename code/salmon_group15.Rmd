@@ -42,7 +42,7 @@ leaflet() %>%
 ```
 
 A professionally formatted data citation
-Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
+ 
 
 ```{r}
 #initial data read in
