@@ -135,8 +135,6 @@ cjs_ts_tidy %>%
   labs(x = "Time (month)",
        y = "Total monthly fish count (n)",
        title = "Seasonal Fish Counts")
-
-rlang::last_error()
 ```
 
 ### Summary
