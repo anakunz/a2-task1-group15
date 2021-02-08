@@ -79,6 +79,8 @@ jackcoho_plot <- ggplot(ts_salmon, aes(x = date, y = jack_coho))+
     x = " "
   )+
   ylim(0, 1250)
+
+
 ```
 
 ```{r, fig.cap = "**Figure 1.** Shows the number of adult Steelhead (top plot), Jack Coho (middle plot), and Coho (bottom plot) salmon passing through the Willamette Falls Fish Ladder on the Willamette River in Oregon from January 1 2001 - December 31 2010."}
