@@ -21,6 +21,7 @@ library(tsibble)
 library(slider)
 library(lubridate)
 library(patchwork)
+library(leaflet)
 ```
 
 # Overview:
@@ -34,7 +35,12 @@ The Willamette River Falls Fish Ladder in Oregon has been the site of fish count
 This study provides a yearly time series, seasonplot, and statistical summary of fish passage from 2001 - 2010.
 
 
-A map of the fish ladder location (you can make this in R on your own, or include an existing map appropriately licensed, with attribution)
+```{r}
+leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(lng = -122.6193, lat = 45.3511, popup = "Willamette Falls")
+```
+
 A professionally formatted data citation
 Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
 
