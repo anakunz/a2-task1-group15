@@ -24,11 +24,7 @@ library(lubridate)
 
 # Tab 2: Seasonplots
 
-This “Seasonplots” tab should contain: 
-
-- A finalized seasonplot for each species (coho, jack coho, steelhead). You can either facet, or use patchwork, to make the figure. Add a caption. 
-- Add 2 - 3 bulletpoints summarizing the major trends you see in the seasonplots.
-Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
+A finalized seasonplot for each species (coho, jack coho, steelhead), segmented with `facet_wrap`. 
 ```{r seasonplot1}
 coho_jack_steel <- read_csv(here("data","willamette_fish_passage.csv")) %>% 
   clean_names() %>% 
@@ -44,13 +40,25 @@ cjs_ts <- coho_jack_steel %>%
 cjs_ts_tidy <- cjs_ts %>% 
   pivot_longer(`coho`:`steelhead`, # The columns I'm gathering together
                names_to = "fish_species", # new column name for existing names
-               values_to = "fish_count") # new column name to store values
+               values_to = "fish_count") %>% # new column name to store values
+  index_by(yr_mo = ~yearmonth(.)) %>% 
+  group_by(fish_species) %>% 
+  summarize(monthly_fish_count = sum(fish_count, na.rm = TRUE))
 
 cjs_ts_tidy %>% 
-  filter(year(date) > 2000) %>% 
-  gg_season(y = fish_count) +
+  filter(year(yr_mo) > 2000) %>% 
+  gg_season(y = monthly_fish_count) +
   theme_minimal() +
   labs(x = "Time (month)",
        y = "Total monthly fish count (n)",
        title = "Seasonal Fish Counts")
 ```
+
+### Summary
+
+Mapping the seasonality of total adult salmon from 2001-2010  highlights regular fluctuations in passage:
+
+- Jack Coho and Coho species pass through the Columbia Basin in the late summer and fall (August-November), with highest passage numbers occurring seasonally in the month of September.
+
+- Steelhead species pass through the Columbia Basin in higher densities and throughout the year. However, Steelhead do pass more frequently in the spring and early summer (February-June), with highest passage numbers observed in May and June.
+
