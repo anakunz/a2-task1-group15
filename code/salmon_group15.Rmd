@@ -1,6 +1,6 @@
 ---
 title: "Salmon Group 15"
-author: "Anastasia Kunz, Zoe Duerksen-Salm, Catherine Takata"
+author: "Anastasia Kunz, Zoe Duerksen-Salm, and Catherine Takata"
 date: "1/30/2021"
 output: 
   html_document:
@@ -11,7 +11,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(here)
@@ -20,14 +20,97 @@ library(feasts)
 library(tsibble)
 library(slider)
 library(lubridate)
+library(patchwork)
 ```
+
+# Overview:
+This “Overview” section (above the tabs) should contain, in whatever order you choose: 
+An engaging image (with caption, including photo credit) that is relevant to the dataset
+A brief summary (3 - 4 sentences) of the dataset, and what is included in this “report”
+A map of the fish ladder location (you can make this in R on your own, or include an existing map appropriately licensed, with attribution)
+A professionally formatted data citation
+Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
+
+```{r}
+#initial data read in
+
+fish_data <- read_csv(here("data","willamette_fish_passage.csv")) %>% 
+  clean_names()
+```
+# Tab 1: Time Series
+
+
+```{r timeseries}
+
+#data wrangling: convert date, create tsibble, select species, na to 0
+ts_salmon <- fish_data %>% 
+  mutate(date = lubridate::mdy(date)) %>% 
+  as_tsibble(key = NULL, index = date) %>% 
+  select(date, coho, jack_coho, steelhead) %>% 
+  mutate_at(c(2:4), ~replace(., is.na(.), 0)) 
+
+#Steelhead Plot
+
+steelhead_plot <-ggplot(ts_salmon, aes(x = date, y = steelhead))+
+  geom_line(color = "indianred")+
+  labs(
+    y = "Steelhead",
+    x = " "
+  )+
+  theme_minimal()+
+  ylim(0, 1250)
+
+# Coho Plot
+coho_plot <- ggplot(ts_salmon, aes(x = date, y = coho))+
+  geom_line(color = "rosybrown")+
+  theme_minimal()+
+  labs(
+    y = "Coho",
+    x = "Date"
+  )+
+  ylim(0, 1250)
+
+# Jack Coho Plot
+jackcoho_plot <- ggplot(ts_salmon, aes(x = date, y = jack_coho))+
+  geom_line(color = "lightsalmon1")+
+  theme_minimal()+
+  labs(
+    y = "Jack Coho",
+    x = " "
+  )+
+  ylim(0, 1250)
+
+
+```
+
+```{r, fig.cap = "**Figure 1.** Shows the number of adult Steelhead (top plot), Jack Coho (middle plot), and Coho (bottom plot) salmon passing through the Willamette Falls Fish Ladder on the Willamette River in Oregon from January 1 2001 - December 31 2010."}
+# Final graph using patchwork
+
+salmon_patchwork <-(steelhead_plot / jackcoho_plot / coho_plot)
+
+salmon_patchwork + plot_annotation(
+  title = 'Salmon Passage by Species',
+  subtitle = 'Number of Steelhead, Coho, and Jack Coho Salmon counted at the Willamette Falls Fish Ladder \n2001 - 2010'
+)
+```
+
+### Summary
+By tracking the number of adult salmon passing through the fish ladder, species specific trends become clear:
+
+- Steelhead, Jack Coho, and Coho all have song seasonal passage patterns, with Coho and Jack Coho passing in the fall, while Steelhead pass over a greater span of time in the summer months.
+
+- Adult Steelhead usually pass in higher numbers than Coho and Jack Coho, except in 2009 and 2010 when Coho numbers surpassed both Steelhead and Jack Coho.
+
+- Coho show an increasing trend with increasing numbers of adults passing in recent years.
+
+- Jack Coho are showing relatively stable low numbers, with no strong increasing trend.
+
 
 # Tab 2: Seasonplots
 
 A finalized seasonplot for each species (coho, jack coho, steelhead), segmented with `facet_wrap`. 
 ```{r seasonplot1}
-coho_jack_steel <- read_csv(here("data","willamette_fish_passage.csv")) %>% 
-  clean_names() %>% 
+coho_jack_steel <- fish_data %>% 
   select(date, coho, jack_coho, steelhead) 
 
 # convert df to a tsibble
@@ -62,3 +145,44 @@ Mapping the seasonality of total adult salmon from 2001-2010  highlights regular
 
 - Steelhead species pass through the Columbia Basin in higher densities and throughout the year. However, Steelhead do pass more frequently in the spring and early summer (February-June), with highest passage numbers observed in May and June.
 
+
+# Tab 3: Summary statistics and analysis 
+
+This “Summary statistics and analysis” tab should contain: 
+
+- A finalized figure of annual totals for fish passage, for each of the 3 species (coho, jack coho, steelhead). You decide if this is in a single panel, or multiple panels. Add a figure caption. 
+- Add 2 - 3 bulletpoints summarizing major trends you see in the annual totals by species from 2000 - 2010.
+
+
+```{r}
+#Isolate three fish species: coho, jack, and steelhead with select()
+# In a pipe sequence, change the initial "date" and  mutate() to add to the data set
+# Mutate() a new column specifically for "year", in order to easily filter data to obtain "annual" fish totals
+
+coho_jackcoho_steelhead <- fish_data %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(year = year(date)) %>% 
+  select(year, coho, jack_coho, steelhead) %>% 
+  pivot_longer(coho:steelhead, 
+               names_to = "species",
+               values_to = "fish_counts") %>% 
+  group_by(year) %>% 
+  count(species,  wt = fish_counts)
+```
+
+
+```{r}
+
+ggplot(coho_jackcoho_steelhead, aes(fill = species, x = year, y = n)) +
+  geom_col(show.legend = FALSE) + 
+  facet_wrap(~species) + 
+  scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010)) +
+  theme_minimal() +
+  labs(title = "Annual Counts of Fish Passage",
+       subtitle = "Willamette River, Oregon, US",
+       x = "Year",
+       y = "Counts of Fish")
+
+
+#geom_col(position = "dodge", stat = "identity", alpha = 0.7) 
+```
