@@ -27,7 +27,7 @@ library(leaflet)
 # Overview:
 
 
-![Photo taken with a DJI Mavik Pro drone on July 19, 2017.](https://upload.wikimedia.org/wikipedia/commons/c/c2/Willamette_Falls_from_drone.jpg)
+![Photo taken with a DJI Mavik Pro drone on July 19, 2017 by Mrgadget51.](https://upload.wikimedia.org/wikipedia/commons/c/c2/Willamette_Falls_from_drone.jpg)
 
 
 The Willamette River Falls Fish Ladder in Oregon has been the site of fish counts for over 60 years. This analysis explores the passage of Steelhead, Coho, and Jack Coho through the Willamette River Fish Ladder, looking at how their populations are changing through time. By investigating the yearly and seasonal shifts, we can better understand the species dynamics in the Willamette River.
