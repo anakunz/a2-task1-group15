@@ -46,8 +46,8 @@ Data Citation: Columbia River DART, Columbia Basin Research, University of Washi
 fish_data <- read_csv(here("data","willamette_fish_passage.csv")) %>% 
   clean_names()
 ```
-### Tab 1: Time Series
 
+### Tab 1: Time Series
 
 ```{r timeseries}
 
@@ -98,7 +98,7 @@ jackcoho_plot <- ggplot(ts_salmon, aes(x = date, y = jack_coho))+
 salmon_patchwork <-(steelhead_plot / jackcoho_plot / coho_plot)
 
 salmon_patchwork + plot_annotation(
-  title = 'Salmon Passage by Species',
+  title = 'Fig 1. Salmon Passage by Species',
   subtitle = 'Number of Steelhead, Coho, and Jack Coho Salmon counted at the Willamette Falls Fish Ladder \n2001 - 2010'
 )
 ```
@@ -114,6 +114,7 @@ By tracking the number of adult salmon passing through the fish ladder, species 
 
 - Jack Coho are showing relatively stable low numbers, with no strong increasing trend.
 
+---
 
 ### Tab 2: Seasonplots
 
@@ -137,23 +138,27 @@ cjs_ts_tidy <- cjs_ts %>%
   group_by(fish_species) %>% 
   summarize(monthly_fish_count = sum(fish_count, na.rm = TRUE))
 
+# create seasonplot
 cjs_ts_tidy %>% 
   filter(year(yr_mo) > 2000) %>% 
   gg_season(y = monthly_fish_count) +
   theme_minimal() +
   labs(x = "Time (month)",
        y = "Total monthly fish count (n)",
-       title = "Seasonal Fish Counts")
+       title = "Fig 2. Seasonal Fish Counts at the Willamette Falls Fish Ladder",
+       subtitle = "Monthly counts of Steelhead, Coho, and Jack Coho Salmon (2001 - 2010)",
+       caption = "Fig 2: Total observed monthly counts of Coho (top plot), Jack Coho (center) and \nSteelhead (bottom) salmon that travel through the Willamette Falls Fish Ladder   \nbetween 2001-2010. Different color lines on the plot relate to observation year.   ")
 ```
 
 #### Summary
 
 Mapping the seasonality of total adult salmon from 2001-2010  highlights regular fluctuations in passage:
 
-- Jack Coho and Coho species pass through the Columbia Basin in the late summer and fall (August-November), with highest passage numbers occurring seasonally in the month of September.
+- Jack Coho and Coho species pass through the Willamette Falls Fish Ladder in the late summer and fall (August-November), with highest passage numbers occurring seasonally in the month of September.
 
-- Steelhead species pass through the Columbia Basin in higher densities and throughout the year. However, Steelhead do pass more frequently in the spring and early summer (February-June), with highest passage numbers observed in May and June.
+- Steelhead species pass through the Willamette Falls Fish Ladder in higher densities and throughout the year. However, Steelhead do pass more frequently in the spring and early summer (February-June), with highest passage numbers observed in May and June.
 
+---
 
 ### Tab 3: Summary statistics and analysis 
 
